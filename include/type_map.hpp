@@ -25,6 +25,14 @@ namespace mk {
         constexpr static inline auto Second = v;
     };
 
+    template <typename T> 				T 						InverseImpl(T val);
+    template <typename K, typename V> 	TypePair<V, K> 			InverseImpl(TypePair<K, V> val);
+    template <auto k, typename V> 		TypeValuePair<V, k> 	InverseImpl(ValueTypePair<k, V> val);
+    template <typename K, auto v> 		ValueTypePair<v, K> 	InverseImpl(TypeValuePair<K, v> val);
+    template <auto k, auto v> 			ValuePair<v, k> 		InverseImpl(ValuePair<k, v> val);
+
+    template <typename T> using Inverse = decltype(InverseImpl(std::declval<T>()));
+
     template <typename>
     static constexpr bool is_type_pair_v = false;
     template <typename K, typename V>
@@ -91,5 +99,7 @@ namespace mk {
             constexpr auto index = GetIndex<k, Pairs...>();
             return std::tuple_element<index, std::tuple<Pairs...>>::type::Second;
         }
+
+        using InverseMap = TypeMap<Inverse<Pairs>...>;
     };
 }
